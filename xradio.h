@@ -47,6 +47,13 @@
 #include "pm.h"
 #include "fwio.h"
 
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0))
+static inline int del_timer_sync(struct timer_list *timer)
+{
+	return timer_delete_sync(timer);
+}
+#endif
+
 /* #define ROC_DEBUG */
 /* hidden ssid is only supported when separate probe resp IE
    configuration is supported */
