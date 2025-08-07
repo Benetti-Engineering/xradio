@@ -1764,14 +1764,12 @@ void xradio_ba_work(struct work_struct *work)
 	wsm_unlock_tx(hw_priv);
 }
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0))
 void xradio_ba_timer(struct timer_list *t)
 {
-	struct xradio_common *hw_priv = from_timer(hw_priv, t, ba_timer);
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 16, 0))
+	struct xradio_common *hw_priv = timer_container_of(hw_priv, t, ba_timer);
 #else
-void xradio_ba_timer(unsigned long arg)
-{
-	struct xradio_common *hw_priv = (struct xradio_common *)arg;
+	struct xradio_common *hw_priv = from_timer(hw_priv, t, ba_timer);
 #endif
 	bool ba_ena;
 

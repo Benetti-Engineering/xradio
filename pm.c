@@ -257,14 +257,12 @@ void xradio_pm_unlock_awake(struct xradio_pm_state *pm)
 #else /* CONFIG_WAKELOCK */
 
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0))
 static void xradio_pm_stay_awake_tmo(struct timer_list *t)
 {
-	struct xradio_pm_state *pm = from_timer(pm, t, stay_awake);
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 16, 0))
+	struct xradio_pm_state *pm = timer_container_of(pm, t, stay_awake);
 #else
-static void xradio_pm_stay_awake_tmo(unsigned long arg)
-{
-	struct xradio_pm_state *pm = (struct xradio_pm_state *)arg;
+	struct xradio_pm_state *pm = from_timer(pm, t, stay_awake);
 #endif
 	(void)pm;
 }
