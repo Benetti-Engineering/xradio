@@ -156,14 +156,12 @@ static void __xradio_queue_gc(struct xradio_queue *queue,
 	}
 }
 
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0))
 static void xradio_queue_gc(struct timer_list *t)
 {
-	struct xradio_queue *queue = from_timer(queue, t, gc);
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 16, 0))
+	struct xradio_queue *queue = timer_container_of(queue, t, gc);
 #else
-static void xradio_queue_gc(unsigned long arg)
-{
-	struct xradio_queue *queue = (struct xradio_queue *)arg;
+	struct xradio_queue *queue = from_timer(queue, t, gc);
 #endif
 	LIST_HEAD(list);
 
